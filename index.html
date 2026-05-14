@@ -1,62 +1,79 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Pages 测试页面</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            text-align: center;
-        }
-        .container {
-            border: 2px solid #007bff;
-            border-radius: 10px;
-            padding: 2rem;
-            background-color: #f8f9fa;
-        }
-        h1 { color: #007bff; }
-        .status {
-            color: #28a745;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover { background-color: #0056b3; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>游戏通用互通接龙</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#f5f6f8;padding:20px;font-family:微软雅黑;}
+.box{max-width:500px;margin:0 auto;background:#fff;padding:20px;border-radius:12px;}
+h2{text-align:center;margin-bottom:20px;color:#333;}
+.item{margin:12px 0;}
+label{display:block;margin-bottom:6px;color:#555;}
+input{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:16px;}
+button{width:100%;padding:12px;background:#2395ff;color:#fff;border:none;border-radius:6px;font-size:16px;margin-top:10px;}
+.list{margin-top:20px;border-top:1px solid #eee;padding-top:20px;}
+.list-item{padding:8px;border-bottom:1px solid #f0f0f0;}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 娇娇 哈哈 GitHub Pages 部署成功！</h1>
-        <p class="status">当前状态：在线 (Online)</p>
-        <hr>
-        <p>这是一个用于测试静态托管服务的页面。</p>
-        <p>如果你能看到这个页面，说明你的 GitHub 仓库配置和部署流程一切正常。</p>
+<div class="box">
+  <h2>游戏互通组队接龙</h2>
+  <div class="item">
+    <label>微信昵称</label>
+    <input type="text" id="nick" placeholder="请填微信昵称">
+  </div>
+  <div class="item">
+    <label>所在微信群名</label>
+    <input type="text" id="group" placeholder="例：游戏1群">
+  </div>
+  <div class="item">
+    <label>游戏ID</label>
+    <input type="text" id="gameid" placeholder="你的游戏账号ID">
+  </div>
+  <div class="item">
+    <label>在线时间段</label>
+    <input type="text" id="time" placeholder="例：晚上8点-12点">
+  </div>
+  <button onclick="addJoin()">提交接龙</button>
 
-        <!-- 简单的交互测试 -->
-        <button onclick="checkTime()">点击检查部署时间</button>
-        <p id="time-display"></p>
-    </div>
+  <div class="list">
+    <h3>接龙列表</h3>
+    <div id="listBox"></div>
+  </div>
+</div>
 
-    <script>
-        function checkTime() {
-            const now = new Date();
-            document.getElementById('time-display').innerText =
-                "当前访问时间：" + now.toLocaleString();
-        }
-    </script>
+<script>
+let list = JSON.parse(localStorage.getItem("gameJoinList")) || [];
+function render(){
+  let html = "";
+  list.forEach((item,idx)=>{
+    html += `<div class="list-item">
+      ${idx+1}. ${item.nick} | ${item.group} | ${item.gameid} | ${item.time}
+    </div>`;
+  });
+  document.getElementById("listBox").innerHTML = html;
+}
+function addJoin(){
+  let nick = document.getElementById("nick").value.trim();
+  let group = document.getElementById("group").value.trim();
+  let gameid = document.getElementById("gameid").value.trim();
+  let time = document.getElementById("time").value.trim();
+  if(!nick||!group||!gameid){
+    alert("昵称、群名、游戏ID不能为空");
+    return;
+  }
+  list.push({nick,group,gameid,time});
+  localStorage.setItem("gameJoinList",JSON.stringify(list));
+  render();
+  alert("接龙成功！");
+  document.getElementById("nick").value = "";
+  document.getElementById("group").value = "";
+  document.getElementById("gameid").value = "";
+  document.getElementById("time").value = "";
+}
+render();
+</script>
 </body>
 </html>
